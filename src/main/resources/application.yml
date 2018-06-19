@@ -1,0 +1,105 @@
+server:
+    tomcat:
+      uri-encoding: utf-8
+    port: 8080
+
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://172.16.1.204:3306/test2
+        username: root
+        password: root
+        driver-class-name: com.mysql.jdbc.Driver
+        #driver-class-name: oracle.jdbc.driver.OracleDriver
+        # 下面为连接池的补充设置，应用到上面所有数据源中
+        # 初始化大小，最小，最大
+        initialSize: 1
+        minIdle: 3
+        maxActive: 20
+        # 配置获取连接等待超时的时间
+        maxWait: 60000
+        # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+        timeBetweenEvictionRunsMillis: 60000
+        # 配置一个连接在池中最小生存的时间，单位是毫秒
+        minEvictableIdleTimeMillis: 30000
+        #validationQuery: select 'x'
+        testWhileIdle: false
+        testOnBorrow: false
+        testOnReturn: false
+        # 打开PSCache，并且指定每个连接上PSCache的大小
+        poolPreparedStatements: true
+        maxPoolPreparedStatementPerConnectionSize: 20
+        # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+        filters: stat,wall,slf4j
+        # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+        connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+        # 合并多个DruidDataSource的监控数据
+        useGlobalDataSourceStat: true
+
+    thymeleaf:
+        prefix: classpath:/templates
+        suffix: .html
+        mode: LEGACYHTML5
+        encoding: UTF-8
+        cache: false
+
+    devtools:
+       restart:
+          exclude: static/**,public/**
+
+    #redis
+    redis:
+      # Redis数据库索引（默认为0）
+      database: 0
+      host: 127.0.0.1
+      port: 6379
+      password:
+      jedis:
+        pool:
+          # 连接池最大连接数（使用负值表示没有限制）
+          max-active: 8
+          # 连接池最大阻塞等待时间（使用负值表示没有限制）
+          max-wait: -1
+          # 连接池中的最大空闲连接
+          max-idle: 8
+          # 连接池中的最小空闲连接
+          min-idle: 0
+      # 连接超时时间（毫秒）
+      timeout: 10000
+
+
+
+#mybatis mapper.xml文件目录
+mybatis:
+     mapper-locations: classpath*:sqlmapper/*Mapper.xml
+
+Appenders:
+    Console:  #输出到控制台
+      name: CONSOLE #Appender命名
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n"
+    RollingFile: # 输出到文件，超过256MB归档
+      - name: ROLLING_FILE
+        ignoreExceptions: false
+        fileName: /springboot/logs/springboot.log
+        filePattern: "/springboot/logs/$${date:yyyy-MM}/springboot -%d{yyyy-MM-dd}-%i.log.gz"
+        PatternLayout:
+          pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: "256 MB"
+        DefaultRolloverStrategy:
+          max: 1000
+Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: CONSOLE
+    Logger: #单独设置某些包的输出级别
+      - name: app.com.kenho.mapper #复数加上-
+        additivity: false #去除重复的log
+        level: trace
+        AppenderRef:
+          - ref: CONSOLE #复数加上-
+          - ref: ROLLING_FILE #复数加上-
