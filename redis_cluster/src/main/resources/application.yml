@@ -1,0 +1,27 @@
+server:
+    tomcat:
+      uri-encoding: utf-8
+    port: 8080
+
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://172.16.1.204:3306/test2
+        username: root
+        password: root
+        driver-class-name: com.mysql.jdbc.Driver
+
+    thymeleaf:
+        prefix: classpath:/templates
+        suffix: .html
+        mode: LEGACYHTML5
+        encoding: UTF-8
+        cache: false
+
+    devtools:
+       restart:
+          exclude: static/**,public/**
+
+#mybatis mapper.xml文件目录
+mybatis:
+     mapper-locations: classpath*:sqlmapper/*Mapper.xml
