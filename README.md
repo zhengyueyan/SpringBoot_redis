@@ -12,3 +12,6 @@ redis测试demo
  直接使用注解注入进service即可直接使用  <Br/>
  @Autowired  <Br/>
  private RedisService redisService;
+ 
+#添加redisService
+  封装redisService，直接添加即可使用，使用@Autowired引入即可。
